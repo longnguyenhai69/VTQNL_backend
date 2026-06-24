@@ -6,8 +6,20 @@ const userRoutes = require('./routes/users');
 
 const app = express();
 
-const allowedOrigin = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
-app.use(cors({ origin: allowedOrigin }));
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowed = [
+      'http://localhost:5173',
+      'https://vtqnl-frontend-4uhb.vercel.app',
+    ];
+    if (!origin || allowed.some((o) => origin.startsWith(o))) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
