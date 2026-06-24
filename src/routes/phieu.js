@@ -5,6 +5,8 @@ const { exportPhieu } = require('../controllers/exportController');
 
 router.use(authenticate);
 
+router.get('/me', (req, res) => res.json(req.user));
+
 router.get('/stats', ctrl.thongKe);
 router.get('/phieu/cua-toi', requireRole('cong_truong'), ctrl.danhSachPhieu);
 router.get('/phieu/lich-su', ctrl.lichSuPhieu);
