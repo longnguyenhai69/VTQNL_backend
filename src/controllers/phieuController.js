@@ -66,13 +66,12 @@ async function danhSachPhieu(req, res) {
     let query = db.collection('phieu_de_xuat');
 
     if (role === 'cong_truong') {
-      query = query.where('nguoi_lap_uid', '==', uid).orderBy('created_at', 'desc');
+      query = query.where('nguoi_lap_uid', '==', uid);
     } else if (trang_thai) {
-      query = query.where('trang_thai', '==', trang_thai).orderBy('created_at', 'desc');
+      query = query.where('trang_thai', '==', trang_thai);
     } else {
       const buoc = ROLE_BUOC[role];
-      if (buoc) query = query.where('trang_thai', '==', buoc).orderBy('created_at', 'desc');
-      else query = query.orderBy('created_at', 'desc');
+      if (buoc) query = query.where('trang_thai', '==', buoc);
     }
 
     const snap = await query.get();
@@ -210,18 +209,18 @@ async function lichSuPhieu(req, res) {
     const db = getFirestore();
     const { role, uid } = req.user;
     let query = db.collection('phieu_de_xuat')
-      .where('trang_thai', 'in', ['hoan_thanh', 'tu_choi'])
-      .orderBy('updated_at', 'desc');
+      .where('trang_thai', 'in', ['hoan_thanh', 'tu_choi']);
 
     if (role === 'cong_truong') {
       query = db.collection('phieu_de_xuat')
         .where('nguoi_lap_uid', '==', uid)
-        .where('trang_thai', 'in', ['hoan_thanh', 'tu_choi'])
-        .orderBy('updated_at', 'desc');
+        .where('trang_thai', 'in', ['hoan_thanh', 'tu_choi']);
     }
 
     const snap = await query.get();
-    const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const data = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
     res.json(data);
   } catch (err) {
     console.error(err);
