@@ -6,7 +6,8 @@ const userRoutes = require('./routes/users');
 
 const app = express();
 
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' }));
+const allowedOrigin = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
+app.use(cors({ origin: allowedOrigin }));
 app.use(express.json());
 
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
